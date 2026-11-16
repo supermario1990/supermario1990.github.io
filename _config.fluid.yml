@@ -1,0 +1,69 @@
+# Fluid 主题覆盖配置
+# 完整选项见 node_modules/hexo-theme-fluid/_config.yml
+
+navbar:
+  blog_title: "supermario1990 · 知识库"
+  menu:
+    - { key: "home", link: "/", icon: "iconfont icon-home-fill" }
+    - { key: "archive", link: "/archives/", icon: "iconfont icon-archive-fill" }
+    - { key: "tag", link: "/tags/", icon: "iconfont icon-tags-fill" }
+
+# 搜索需要额外插件，这里不启用
+search:
+  enable: false
+
+custom_css: /css/custom.css
+custom_js: /js/mobile-toc.js
+
+dark_mode:
+  enable: true
+  default: auto
+
+index:
+  slogan:
+    enable: true
+    text: "把零散的深度研究沉淀成可回看的文章"
+
+post:
+  meta:
+    author:
+      enable: false
+    date:
+      enable: true
+      format: "YYYY-MM-DD"
+    wordcount:
+      enable: true
+    min2read:
+      enable: true
+      awl: 2
+      wpm: 350
+
+  # 侧边栏目录
+  toc:
+    enable: true
+    expand_all: false
+    placement: right
+    headingSelector: "h2,h3"
+    collapseDepth: 0
+
+  # 版权声明区块，保持页面简洁，关闭
+  copyright:
+    enable: false
+
+  comments:
+    enable: true
+    type: giscus
+
+# giscus 评论（基于 GitHub Discussions）
+giscus:
+  repo: supermario1990/supermario1990.github.io
+  repo-id: R_kgDOVwIH1g
+  category: Comments
+  category-id: DIC_kwDOVwIH1s4DLPt3
+  mapping: pathname
+  reactions-enabled: 1
+  emit-metadata: 0
+  input-position: top
+  lang: zh-CN
+  theme-light: light
+  theme-dark: dark

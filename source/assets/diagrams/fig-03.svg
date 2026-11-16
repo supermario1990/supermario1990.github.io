@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 460" role="img" aria-label="LT 与 ET 的触发行为对比" class="diag" xmlns="http://www.w3.org/2000/svg" width="960" height="460">
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.diag text{fill:#1b1e21}
+.diag .ts{font-size:9.5px;fill:#5a636b}
+.diag .t{font-size:11px}
+.diag .tb{font-size:12.5px;font-weight:700}
+.diag .tm{font-family:"SF Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;font-size:10.5px}
+.diag .tw{fill:#ffffff}
+.diag .ta{fill:#0f5f68}
+.diag .to{fill:#a8541c}
+.diag .th{fill:#9d2f2f}
+</style>
+
+            <!-- 面板 A -->
+            <rect x="20" y="18" width="920" height="196" rx="8" fill="#ffffff" stroke="#ddd6c9"/>
+            <text x="40" y="44" class="tb ta">LT · 水平触发</text>
+            <text x="152" y="44" class="ts">只要缓冲区非空，每次 epoll_wait 都返回该 fd</text>
+
+            <text x="40" y="94" class="ts">可读数据量</text>
+            <line x1="180" y1="60" x2="180" y2="150" stroke="#c9c1b2"/>
+            <line x1="180" y1="150" x2="900" y2="150" stroke="#c9c1b2"/>
+            <text x="900" y="166" text-anchor="end" class="ts">时间</text>
+
+            <path d="M180 150 H220 V70 H300 V150 H560 V70 H640 V150" fill="none" stroke="#0f5f68" stroke-width="2.5"/>
+            <text x="236" y="104" class="ts">数据到达</text>
+            <text x="306" y="140" class="ts">应用读取</text>
+
+            <circle cx="232" cy="186" r="4" fill="#0f5f68"/>
+            <circle cx="256" cy="186" r="4" fill="#0f5f68"/>
+            <circle cx="280" cy="186" r="4" fill="#0f5f68"/>
+            <text x="296" y="190" class="ts">同一份未读完的数据被反复上报</text>
+
+            <text x="660" y="104" class="ts th">若应用一直不读，wait 会变成忙循环</text>
+            <text x="660" y="120" class="ts">优点是漏处理一次也不会丢事件</text>
+
+            <!-- 面板 B -->
+            <rect x="20" y="232" width="920" height="196" rx="8" fill="#ffffff" stroke="#ddd6c9"/>
+            <text x="40" y="258" class="tb to">ET · 边缘触发</text>
+            <text x="152" y="258" class="ts">只在“不可读 → 可读”的边沿通知一次</text>
+
+            <text x="40" y="308" class="ts">可读数据量</text>
+            <line x1="180" y1="270" x2="180" y2="360" stroke="#c9c1b2"/>
+            <line x1="180" y1="360" x2="900" y2="360" stroke="#c9c1b2"/>
+            <text x="900" y="376" text-anchor="end" class="ts">时间</text>
+
+            <path d="M180 360 H220 V280 H300 V360 H520 V280 H620 V360" fill="none" stroke="#a8541c" stroke-width="2.5"/>
+            <text x="330" y="318" class="ts">必须循环读到 EAGAIN</text>
+
+            <circle cx="226" cy="396" r="4" fill="#a8541c"/>
+            <text x="238" y="400" class="ts">通知一次</text>
+            <circle cx="526" cy="396" r="4" fill="#a8541c"/>
+            <text x="538" y="400" class="ts">新的边沿，再通知一次</text>
+
+            <text x="660" y="318" class="ts th">只读一次就返回 → 残留数据可能长期不被通知</text>
+            <text x="660" y="334" class="ts">除非有新数据到达，产生新的边沿</text>
+          </svg>

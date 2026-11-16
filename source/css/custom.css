@@ -1,0 +1,54 @@
+/* 长文阅读的移动端加固：防止宽表格、代码块、超长行把页面撑出横向滚动条 */
+.markdown-body {
+  overflow-wrap: break-word;
+}
+
+.markdown-body a,
+.markdown-body code {
+  overflow-wrap: anywhere;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 991px) {
+  /* 窄屏下表格改为自身可横向滚动，而不是撑开页面 */
+  .markdown-body table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .markdown-body pre {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 手机上的折叠目录 */
+  .mobile-toc {
+    margin: 0 0 1.4rem;
+    border: 1px solid #e4e4e4;
+    border-radius: 6px;
+    padding: 0 1rem;
+    background: #fafafa;
+  }
+
+  .mobile-toc > summary {
+    cursor: pointer;
+    padding: .7rem 0;
+    font-weight: 600;
+    outline: none;
+  }
+
+  .mobile-toc .toc-list {
+    padding-left: 1rem;
+  }
+
+  .mobile-toc ol {
+    padding-left: 1.1rem;
+    margin: .2rem 0 .8rem;
+  }
+}

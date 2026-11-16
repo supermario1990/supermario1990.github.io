@@ -1,0 +1,35 @@
+{
+  "name": "supermario1990-blog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "hexo generate",
+    "clean": "hexo clean",
+    "server": "hexo server",
+    "deploy": "hexo deploy",
+    "new": "hexo new"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@adobe/css-tools": "^5.0.0",
+    "hexo": "^7.3.0",
+    "hexo-cli": "^4.3.2",
+    "hexo-deployer-git": "^4.0.0",
+    "hexo-generator-archive": "^2.0.0",
+    "hexo-generator-category": "^2.0.0",
+    "hexo-generator-index": "^4.0.0",
+    "hexo-generator-tag": "^2.0.0",
+    "hexo-renderer-ejs": "^2.0.0",
+    "hexo-renderer-marked": "^7.0.1",
+    "hexo-renderer-stylus": "^3.0.1",
+    "hexo-theme-fluid": "^1.9.9",
+    "hexo-theme-next": "^8.29.1"
+  },
+  "private": true,
+  "hexo": {
+    "version": "7.3.0"
+  }
+}
