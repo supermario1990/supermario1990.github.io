@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 190" role="img" aria-label="epoll 与 io_uring 的请求路径对比示意图" class="diag" xmlns="http://www.w3.org/2000/svg" width="960" height="190">
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.diag text{fill:#1b1e21}
+.diag .ts{font-size:9.5px;fill:#5a636b}
+.diag .t{font-size:11px}
+.diag .tb{font-size:12.5px;font-weight:700}
+.diag .tm{font-family:"SF Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;font-size:10.5px}
+.diag .tw{fill:#ffffff}
+.diag .ta{fill:#0f5f68}
+.diag .to{fill:#a8541c}
+.diag .th{fill:#9d2f2f}
+</style>
+
+        <defs>
+          <marker id="h-ar" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#8d949a"/>
+          </marker>
+        </defs>
+        <!-- 行 A -->
+        <text x="20" y="52" class="tb ta">epoll</text>
+        <text x="20" y="68" class="ts">就绪通知</text>
+
+        <rect x="104" y="34" width="166" height="38" rx="19" fill="#e2efef" stroke="#bcd6d6"/>
+        <text x="187" y="53" text-anchor="middle" class="t" dominant-baseline="middle">fd 变为可读</text>
+        <line x1="274" y1="53" x2="306" y2="53" stroke="#8d949a" marker-end="url(#h-ar)"/>
+        <text x="290" y="44" text-anchor="middle" class="ts">wait</text>
+
+        <rect x="310" y="34" width="176" height="38" rx="19" fill="#e2efef" stroke="#bcd6d6"/>
+        <text x="398" y="53" text-anchor="middle" class="t" dominant-baseline="middle">返回就绪 fd 列表</text>
+        <line x1="490" y1="53" x2="522" y2="53" stroke="#8d949a" marker-end="url(#h-ar)"/>
+        <text x="506" y="44" text-anchor="middle" class="ts">read()</text>
+
+        <rect x="526" y="34" width="176" height="38" rx="19" fill="#ffffff" stroke="#ddd6c9"/>
+        <text x="614" y="53" text-anchor="middle" class="t" dominant-baseline="middle">应用自己发起 syscall</text>
+        <line x1="706" y1="53" x2="738" y2="53" stroke="#8d949a" marker-end="url(#h-ar)"/>
+        <text x="722" y="44" text-anchor="middle" class="ts">copy</text>
+
+        <rect x="742" y="34" width="196" height="38" rx="19" fill="#e2efef" stroke="#bcd6d6"/>
+        <text x="840" y="53" text-anchor="middle" class="t" dominant-baseline="middle">数据拷入用户缓冲区</text>
+
+        <!-- 行 B -->
+        <text x="20" y="138" class="tb to">io_uring</text>
+        <text x="20" y="154" class="ts">完成通知</text>
+
+        <rect x="104" y="120" width="166" height="38" rx="19" fill="#ffffff" stroke="#ddd6c9"/>
+        <text x="187" y="139" text-anchor="middle" class="t" dominant-baseline="middle">应用填写 SQE</text>
+        <line x1="274" y1="139" x2="306" y2="139" stroke="#8d949a" marker-end="url(#h-ar)"/>
+        <text x="290" y="130" text-anchor="middle" class="ts">submit</text>
+
+        <rect x="310" y="120" width="176" height="38" rx="19" fill="#f7e9dd" stroke="#e6c8ad"/>
+        <text x="398" y="139" text-anchor="middle" class="t" dominant-baseline="middle">内核执行 IO</text>
+        <line x1="490" y1="139" x2="522" y2="139" stroke="#8d949a" marker-end="url(#h-ar)"/>
+        <text x="506" y="130" text-anchor="middle" class="ts">complete</text>
+
+        <rect x="526" y="120" width="176" height="38" rx="19" fill="#f7e9dd" stroke="#e6c8ad"/>
+        <text x="614" y="139" text-anchor="middle" class="t" dominant-baseline="middle">结果写入 CQE</text>
+        <line x1="706" y1="139" x2="738" y2="139" stroke="#8d949a" marker-end="url(#h-ar)"/>
+        <text x="722" y="130" text-anchor="middle" class="ts">reap</text>
+
+        <rect x="742" y="120" width="196" height="38" rx="19" fill="#ffffff" stroke="#ddd6c9"/>
+        <text x="840" y="139" text-anchor="middle" class="t" dominant-baseline="middle">应用只从队列取结果</text>
+      </svg>

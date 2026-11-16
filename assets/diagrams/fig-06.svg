@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 700" role="img" aria-label="epoll 与 io_uring 的选型决策流程" class="diag" xmlns="http://www.w3.org/2000/svg" width="960" height="700">
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.diag text{fill:#1b1e21}
+.diag .ts{font-size:9.5px;fill:#5a636b}
+.diag .t{font-size:11px}
+.diag .tb{font-size:12.5px;font-weight:700}
+.diag .tm{font-family:"SF Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;font-size:10.5px}
+.diag .tw{fill:#ffffff}
+.diag .ta{fill:#0f5f68}
+.diag .to{fill:#a8541c}
+.diag .th{fill:#9d2f2f}
+</style>
+
+            <defs>
+              <marker id="dc-ar" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="#5a636b"/>
+              </marker>
+            </defs>
+
+            <rect x="380" y="18" width="200" height="40" rx="20" fill="#f1ede4" stroke="#ddd6c9"/>
+            <text x="480" y="43" text-anchor="middle" class="t">开始：评估 IO 模型</text>
+            <line x1="480" y1="58" x2="480" y2="84" stroke="#5a636b" marker-end="url(#dc-ar)"/>
+
+            <!-- Q1 -->
+            <polygon points="480,88 630,130 480,172 330,130" fill="#ffffff" stroke="#0f5f68" stroke-width="1.4"/>
+            <text x="480" y="124" text-anchor="middle" class="t">磁盘 / 文件 IO 的异步性</text>
+            <text x="480" y="141" text-anchor="middle" class="t">是核心诉求吗？</text>
+
+            <line x1="630" y1="130" x2="694" y2="130" stroke="#5a636b" marker-end="url(#dc-ar)"/>
+            <text x="662" y="120" text-anchor="middle" class="ts">否</text>
+
+            <line x1="480" y1="172" x2="480" y2="234" stroke="#5a636b" marker-end="url(#dc-ar)"/>
+            <text x="492" y="208" class="ts">是</text>
+
+            <!-- Q2 -->
+            <polygon points="480,238 630,280 480,322 330,280" fill="#ffffff" stroke="#0f5f68" stroke-width="1.4"/>
+            <text x="480" y="274" text-anchor="middle" class="t">内核 ≥ 5.1，且运行环境</text>
+            <text x="480" y="291" text-anchor="middle" class="t">允许 io_uring 吗？</text>
+
+            <line x1="330" y1="280" x2="266" y2="280" stroke="#5a636b" marker-end="url(#dc-ar)"/>
+            <text x="298" y="270" text-anchor="middle" class="ts">否</text>
+
+            <line x1="480" y1="322" x2="480" y2="384" stroke="#5a636b" marker-end="url(#dc-ar)"/>
+            <text x="492" y="358" class="ts">是</text>
+
+            <!-- Q3 -->
+            <polygon points="480,388 630,430 480,472 330,430" fill="#ffffff" stroke="#a8541c" stroke-width="1.4"/>
+            <text x="480" y="424" text-anchor="middle" class="t">需要批量提交 / 极低延迟，</text>
+            <text x="480" y="441" text-anchor="middle" class="t">且能承担复杂度？</text>
+
+            <line x1="630" y1="430" x2="694" y2="430" stroke="#5a636b" marker-end="url(#dc-ar)"/>
+            <text x="662" y="420" text-anchor="middle" class="ts">否</text>
+
+            <line x1="480" y1="472" x2="480" y2="516" stroke="#5a636b" marker-end="url(#dc-ar)"/>
+            <text x="492" y="500" class="ts">是</text>
+
+            <!-- 结论框 -->
+            <rect x="330" y="520" width="300" height="76" rx="8" fill="#f7e9dd" stroke="#a8541c"/>
+            <text x="480" y="546" text-anchor="middle" class="tb to">io_uring</text>
+            <text x="480" y="566" text-anchor="middle" class="ts">配合 liburing；按需开启 SQPOLL / IOPOLL</text>
+            <text x="480" y="584" text-anchor="middle" class="ts">先在真实负载上做基准测试，再决定优化项</text>
+
+            <rect x="700" y="92" width="232" height="76" rx="8" fill="#ffffff" stroke="#0f5f68"/>
+            <text x="716" y="116" class="tb ta">epoll</text>
+            <text x="716" y="138" class="ts">连接数 &gt; 1k 的长连接服务</text>
+            <text x="716" y="154" class="ts">用 ET 时注意非阻塞与读干净</text>
+
+            <rect x="700" y="392" width="232" height="76" rx="8" fill="#ffffff" stroke="#ddd6c9"/>
+            <text x="716" y="416" class="tb">io_uring 基础用法</text>
+            <text x="716" y="438" class="ts">先跑通 submit / complete，</text>
+            <text x="716" y="454" class="ts">暂不开启 SQPOLL / IOPOLL</text>
+
+            <rect x="24" y="242" width="238" height="76" rx="8" fill="#ffffff" stroke="#ddd6c9"/>
+            <text x="40" y="266" class="tb">epoll + 线程池</text>
+            <text x="40" y="288" class="ts">磁盘 IO 交给线程池或 O_DIRECT</text>
+            <text x="40" y="304" class="ts">或为 io_uring 申请白名单后再评估</text>
+
+            <text x="40" y="636" class="ts">若追求极致性能并能独占硬件，再评估 DPDK / SPDK 这类内核旁路方案。</text>
+            <text x="40" y="654" class="ts">选型不是站队：epoll 管网络、io_uring 管磁盘的混合架构同样常见。</text>
+          </svg>
